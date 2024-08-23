@@ -1,21 +1,21 @@
 import express from "express";
 import path from "path";
-
-import postRoutes from "./routes/postRoutes.js";
-import connectDB from "./config/database.js";
-import Post from "./models/post.js";
 import { fileURLToPath } from "url";
+import connectDB from "./config/database.js";
+import postRoutes from "./routes/postRoutes.js";
+import Post from "./models/post.js";
 
-const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const port = process.env.PORT || 3000;
+
+const app = express();
 
 app.use(express.static(path.join(__dirname, "public")));
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-const port = process.env.PORT || 3000;
 
 app.get("/", function (req, res) {
     res.render("index");
@@ -27,9 +27,13 @@ async function start() {
     const client = await connectDB();
     await Post.injectDB(client);
 
-    app.listen(port, () => {
-        console.log("서버 실행중...");
-    });
+    if (process.env.VERCEL) {
+        console.log("Vercel 환경에서는 서버를 시작하지 않습니다.");
+    } else {
+        app.listen(port, () => {
+            console.log("서버 실행중...");
+        });
+    }
 
     process.on("SIGINT", async () => {
         try {
