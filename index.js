@@ -18,29 +18,29 @@ app.use(express.urlencoded({ extended: false }));
 const port = process.env.PORT || 3000;
 
 app.get("/", function (req, res) {
-	res.render("index");
+    res.render("index");
 });
 
 app.use("/", postRoutes);
 
 async function start() {
-	const client = await connectDB();
-	await Post.injectDB(client);
+    const client = await connectDB();
+    await Post.injectDB(client);
 
-	app.listen(port, () => {
-		console.log("서버 실행중...");
-	});
+    app.listen(port, () => {
+        console.log("서버 실행중...");
+    });
 
-	process.on("SIGINT", async () => {
-		try {
-			await client.close();
-			console.log("정상 DB 연결 종료");
-			process.exit(0);
-		} catch (err) {
-			console.error("오류에 의한 DB 연결 종료", err);
-			process.exit(1);
-		}
-	});
+    process.on("SIGINT", async () => {
+        try {
+            await client.close();
+            console.log("정상 DB 연결 종료");
+            process.exit(0);
+        } catch (err) {
+            console.error("오류에 의한 DB 연결 종료", err);
+            process.exit(1);
+        }
+    });
 }
 start();
 
