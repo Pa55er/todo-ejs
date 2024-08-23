@@ -11,9 +11,12 @@ const port = process.env.PORT || 3000;
 
 const app = express();
 
+// static file 경로를 설정
 app.use(express.static(path.join(__dirname, "public")));
+// ejs를 사용한다고 명시를 해주고, 경로를 지정해준다.
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+// request 파싱
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
